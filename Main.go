@@ -3,25 +3,23 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 )
 
-func getLocalIP() string {
-	resp, _ := http.Get("https://api.ipify.org")
-	// defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	return string(body[:])
-}
-
 func main() {
-	var ipaddress string
+	printHeader()
+
+	var input string
 	localIPAddress := getLocalIP()
-	flag.StringVar(&ipaddress, "i", localIPAddress, "Specify IP address. Defaults to current public IP address.")
+	flag.StringVar(&input, "i", localIPAddress, "Specify IP address or domain name.")
 	flag.Parse()
-	apiEndpoint := "http://ip-api.com/json/" + ipaddress
-	resp, _ := http.Get(apiEndpoint)
-	// defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Print(string(body))
+	var isIPCorrect bool = checkIPSyntax(input)
+	if isIPCorrect == true {
+		printIPInfo(input)
+	} else {
+		// fmt.Println(ipaddress, "is not a valid IP address.")
+		fmt.Println("Domain Name:	", input)
+		ipaddress := resolveDNSHostname(input)
+		printIPInfo(ipaddress)
+	}
+
 }
