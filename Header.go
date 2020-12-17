@@ -11,4 +11,5 @@ func printHeader() {
 	fmt.Println("|      By Luke Tainton       |")
 	fmt.Println("|        @luketainton        |")
 	fmt.Println("------------------------------")
+	fmt.Println("")
 }

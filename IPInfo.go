@@ -1,11 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"sort"
+	"os"
 	"strings"
 )
 
@@ -27,33 +24,10 @@ type IPAddressInfo struct {
 	IPAddress    string  `json:"query"`
 }
 
-func getIPInfo(ipaddress string) IPAddressInfo {
-	apiEndpoint := "http://ip-api.com/json/" + ipaddress
-	resp, _ := http.Get(apiEndpoint)
-	body, _ := ioutil.ReadAll(resp.Body)
-	infoString := string(body)
-	var info IPAddressInfo
-	err := json.Unmarshal([]byte(infoString), &info)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return info
-}
-
-func getBGPPrefixes(as string) {
-	apiEndpoint := "https://api.hackertarget.com/aslookup/?q=" + as
-	resp, _ := http.Get(apiEndpoint)
-	body, _ := ioutil.ReadAll(resp.Body)
-	prefixesString := string(body)
-	var prefixes = strings.Split(prefixesString, "\n")[1:]
-	sort.Strings(prefixes)
-	for i := 0; i < len(prefixes); i++ {
-		fmt.Println(prefixes[i])
-	}
-}
-
 func printIPInfo(input string, wantPrefixes bool) {
 	var IPInfo IPAddressInfo = getIPInfo(input)
+	fmt.Printf("%+v\n", IPInfo)
+	os.Exit(200)
 	var location string = IPInfo.Country + "/" + IPInfo.RegionName + "/" + IPInfo.City
 	var bgpAS string = strings.Fields(IPInfo.AS)[0]
 	fmt.Println("IP Address:	", IPInfo.IPAddress)
