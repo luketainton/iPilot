@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -26,8 +25,6 @@ type IPAddressInfo struct {
 
 func printIPInfo(input string, wantPrefixes bool) {
 	var IPInfo IPAddressInfo = getIPInfo(input)
-	fmt.Printf("%+v\n", IPInfo)
-	os.Exit(200)
 	var location string = IPInfo.Country + "/" + IPInfo.RegionName + "/" + IPInfo.City
 	var bgpAS string = strings.Fields(IPInfo.AS)[0]
 	fmt.Println("IP Address:	", IPInfo.IPAddress)

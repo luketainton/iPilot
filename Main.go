@@ -17,6 +17,7 @@ func main() {
 
 	flag.Usage = func() {
 		fmt.Printf("Usage of iPilot: \n")
+		fmt.Printf("Example: iPilot -b=false -i=me -p \n")
 		fmt.Printf("  -b	bool	enable/disable header (default true)\n")
 		fmt.Printf("  -h	bool	view help\n")
 		fmt.Printf("  -i	string	IP address or domain\n")
