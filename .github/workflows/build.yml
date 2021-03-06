@@ -24,10 +24,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Login to GitHub Package Registry
-      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login https://docker.pkg.github.com -u luketainton --password-stdin
+      run: echo ${{ secrets.PAT }} | docker login ghcr.io -u luketainton --password-stdin
     - name: Build image for GitHub Package Registry
-      run: docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:${{ needs.prepare-data.outputs.tag }} --tag docker.pkg.github.com/luketainton/ipilot/ipilot:latest
+      run: docker build . --file Dockerfile --tag ghcr.io/luketainton/ipilot:${{ needs.prepare-data.outputs.tag }} --tag ghcr.io/luketainton/ipilot:latest
     - name: Push image to GitHub Package Registry
       run: |
-        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:latest
-        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:${{ needs.prepare-data.outputs.tag }}
+        docker push ghcr.io/luketainton/ipilot:latest
+        docker push ghcr.io/luketainton/ipilot:${{ needs.prepare-data.outputs.tag }}
