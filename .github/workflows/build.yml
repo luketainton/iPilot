@@ -1,0 +1,21 @@
+name: Build
+on:
+  push:
+    branches: main
+
+jobs:
+  build:
+    name: GitHub Package Registry
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to GitHub Package Registry
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login https://docker.pkg.github.com -u luketainton --password-stdin
+    - name: Build image for GitHub Package Registry
+      run: |
+        docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:latest
+        docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:$GITHUB_SHA
+    - name: Push image to GitHub Package Registry
+      run: |
+        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:latest
+        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:$GITHUB_SHA
