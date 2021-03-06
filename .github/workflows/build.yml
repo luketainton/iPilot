@@ -4,35 +4,32 @@ on:
     tags: '*'
 
 jobs:
-  prepare:
+  prepare-data:
     name: Prepare Data
-    id: prepare
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.prepare.outputs.SOURCE_TAG }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Prepare environment variables
-      run: |
-        echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-        echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+      - id: prepare
+        name: Prepare environment variables
+        uses: actions/checkout@v2
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
 
   build:
     name: GitHub Package Registry
     id: ghpr
     runs-on: ubuntu-latest
-    needs: [prepare]
-    env:
-      SOURCE_NAME: ${{ steps.prepare.outputs.SOURCE_NAME }}
-      SOURCE_BRANCH: ${{ steps.prepare.outputs.SOURCE_BRANCH }}
-      SOURCE_TAG: ${{ steps.prepare.outputs.SOURCE_TAG }}
+    needs: [prepare-data]
     steps:
     - uses: actions/checkout@v2
     - name: Login to GitHub Package Registry
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login https://docker.pkg.github.com -u luketainton --password-stdin
     - name: Build image for GitHub Package Registry
-      run: |
-        docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:latest
-        docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:$SOURCE_TAG
+      run: docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:${{ needs.prepare-data.outputs.tag }} --tag docker.pkg.github.com/luketainton/ipilot/ipilot:latest
     - name: Push image to GitHub Package Registry
       run: |
         docker push docker.pkg.github.com/luketainton/ipilot/ipilot:latest
-        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:$SOURCE_TAG
+        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:${{ needs.prepare-data.outputs.tag }}
