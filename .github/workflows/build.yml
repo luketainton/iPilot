@@ -7,15 +7,19 @@ jobs:
   prepare:
     name: Prepare Data
     id: prepare
-    run: |
-      echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-      echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-      echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Prepare environment variables
+      run: |
+        echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+        echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
 
   build:
     name: GitHub Package Registry
     id: ghpr
     runs-on: ubuntu-latest
+    needs: [prepare]
     env:
       SOURCE_NAME: ${{ steps.prepare.outputs.SOURCE_NAME }}
       SOURCE_BRANCH: ${{ steps.prepare.outputs.SOURCE_BRANCH }}
