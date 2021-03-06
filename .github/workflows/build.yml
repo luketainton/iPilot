@@ -1,7 +1,7 @@
 name: Build
 on:
   push:
-    branches: main
+    tags: *
 
 jobs:
   build:
@@ -14,8 +14,8 @@ jobs:
     - name: Build image for GitHub Package Registry
       run: |
         docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:latest
-        docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:$GITHUB_SHA
+        docker build . --file Dockerfile --tag docker.pkg.github.com/luketainton/ipilot/ipilot:$GITHUB_REF
     - name: Push image to GitHub Package Registry
       run: |
         docker push docker.pkg.github.com/luketainton/ipilot/ipilot:latest
-        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:$GITHUB_SHA
+        docker push docker.pkg.github.com/luketainton/ipilot/ipilot:$GITHUB_REF
