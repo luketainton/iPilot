@@ -12,7 +12,6 @@ jobs:
     steps:
       - id: prepare
         name: Prepare environment variables
-        uses: actions/checkout@v2
         run: |
           echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
           echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
