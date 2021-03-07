@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.prepare.outputs.SOURCE_TAG }}
+      repo: ${{ steps.prepare.outputs.REPO }}
+      lrepo: ${{ steps.prepare.outputs.LREPO }}
     steps:
       - id: prepare
         name: Prepare environment variables
@@ -16,8 +18,10 @@ jobs:
           echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
           echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
           echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+          echo ::set-output name=REPO::${GITHUB_REPOSITORY#luketainton/}
+          echo ::set-output name=LREPO::${GITHUB_REPOSITORY#luketainton/} | tr '[:upper:]' '[:lower:]'
 
-  build:
+  docker:
     name: GitHub Package Registry
     runs-on: ubuntu-latest
     needs: [prepare-data]
@@ -26,8 +30,34 @@ jobs:
     - name: Login to GitHub Package Registry
       run: echo ${{ secrets.PAT }} | docker login ghcr.io -u luketainton --password-stdin
     - name: Build image for GitHub Package Registry
-      run: docker build . --file Dockerfile --tag ghcr.io/luketainton/ipilot:${{ needs.prepare-data.outputs.tag }} --tag ghcr.io/luketainton/ipilot:latest
+      run: docker build . --file Dockerfile --tag ghcr.io/luketainton/${{ needs.prepare-data.outputs.lrepo }}:${{ needs.prepare-data.outputs.tag }} --tag ghcr.io/luketainton/${{ needs.prepare-data.outputs.lrepo }}:latest
     - name: Push image to GitHub Package Registry
       run: |
-        docker push ghcr.io/luketainton/ipilot:latest
-        docker push ghcr.io/luketainton/ipilot:${{ needs.prepare-data.outputs.tag }}
+        docker push ghcr.io/luketainton/${{ needs.prepare-data.outputs.lrepo }}:latest
+        docker push ghcr.io/luketainton/${{ needs.prepare-data.outputs.lrepo }}:${{ needs.prepare-data.outputs.tag }}
+
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    needs: [prepare-data]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build artifacts
+      run: |
+        docker run --rm -w /go/src/app -v ${PWD}:/go/src/app -e CGO_ENABLED=0 -e GOARCH=amd64 -e GOOS=darwin golang:alpine go build -o /go/src/app/${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-darwin-amd64
+        docker run --rm -w /go/src/app -v ${PWD}:/go/src/app -e CGO_ENABLED=0 -e GOARCH=arm64 -e GOOS=darwin golang:alpine go build -o /go/src/app/${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-darwin-arm64
+        docker run --rm -w /go/src/app -v ${PWD}:/go/src/app -e CGO_ENABLED=0 -e GOARCH=amd64 -e GOOS=linux golang:alpine go build -o /go/src/app/${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-linux-amd64
+        docker run --rm -w /go/src/app -v ${PWD}:/go/src/app -e CGO_ENABLED=0 -e GOARCH=amd64 -e GOOS=windows golang:alpine go build -o /go/src/app/${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-win-amd64.exe
+        docker run --rm -w /go/src/app -v ${PWD}:/go/src/app -e CGO_ENABLED=0 -e GOARCH=386 -e GOOS=windows golang:alpine go build -o /go/src/app/${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-win-x86.exe
+    - uses: meeDamian/github-release@v2.0.3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ needs.prepare-data.outputs.tag }}
+        gzip: false
+        files: >
+          ${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-darwin-amd64
+          ${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-darwin-arm64
+          ${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-linux-amd64
+          ${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-win-amd64.exe
+          ${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-win-x86.exe
+
