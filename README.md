@@ -16,5 +16,8 @@ Here are some ways that you can run the script:
 | `./iPilot -i google.com` | Run against the domain name `google.com` |
 | `./iPilot -i google.com -p` | Run against the domain name `google.com` and lists BGP prefixes |
 
+## Support
+For support please open an issue on [GitLab](https://gitlab.com/luketainton/iPilot) or email [ipilot@help.tainton.uk](mailto:ipilot@help.tainton.uk).
+
 ## Credits
 This script runs thanks to the APIs provided by [IP-API](http://ip-api.com) and [HackerTarget](https://hackertarget.com/as-ip-lookup).
