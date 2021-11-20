@@ -22,6 +22,8 @@ build-docker:
 
 build-binary:
   stage: build-binary
+  only:
+    - tags
   image: golang:1.17.3
   before_script:
     - cd $GOPATH/src
@@ -38,9 +40,14 @@ build-binary:
 
 upload:
   stage: upload
+  only:
+    - tags
   image: curlimages/curl:latest
   rules:
     - if: $CI_COMMIT_TAG
+  before_script:
+    - ls
+    - pwd
   script:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-amd64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-amd64"'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-arm64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-arm64"'
@@ -50,6 +57,8 @@ upload:
 
 release:
   stage: release
+  only:
+    - tags
   image: registry.gitlab.com/gitlab-org/release-cli:v0.4.0
   rules:
     - if: $CI_COMMIT_TAG
