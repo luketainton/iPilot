@@ -1,10 +1,9 @@
 stages:
   - build
-  - build
   - upload
   - release
 
-build docker:
+build-docker:
   stage: build
   only:
     - tags
@@ -20,7 +19,7 @@ build docker:
     - docker push $IMAGE_TAG
     - docker push $CI_REGISTRY_IMAGE:latest
 
-build binary:
+build-binary:
   stage: build
   only:
     - tags
@@ -47,7 +46,7 @@ upload:
   rules:
     - if: $CI_COMMIT_TAG
   dependencies:
-    - build:binary
+    - build-binary
   script:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-amd64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-amd64"'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-arm64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-arm64"'
