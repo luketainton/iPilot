@@ -42,11 +42,11 @@ upload:
   rules:
     - if: $CI_COMMIT_TAG
   script:
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-amd64 ${PACKAGE_REGISTRY_URL}'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-arm64 ${PACKAGE_REGISTRY_URL}'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-linux-amd64 ${PACKAGE_REGISTRY_URL}'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-win-amd64.exe ${PACKAGE_REGISTRY_URL}'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-win-x86.exe ${PACKAGE_REGISTRY_URL}'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-amd64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-amd64"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-darwin-arm64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-arm64"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-linux-amd64 "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-linux-amd64"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-win-amd64.exe "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-win-amd64.exe"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file iPilot-${CI_COMMIT_TAG}-win-x86.exe "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-win-x86.exe"'
 
 release:
   stage: release
@@ -56,8 +56,8 @@ release:
   script:
     - |
       release-cli create --name "$CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
-        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-darwin-amd64\",\"url\":\"iPilot-${CI_COMMIT_TAG}-darwin-amd64\"}" \
-        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-darwin-arm64\",\"url\":\"iPilot-${CI_COMMIT_TAG}-darwin-arm64\"}" \
-        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-linux-amd64\",\"url\":\"iPilot-${CI_COMMIT_TAG}-linux-amd64\"}" \
-        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-win-amd64.exe\",\"url\":\"iPilot-${CI_COMMIT_TAG}-win-amd64.exe\"}" \
-        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-win-x86.exe\",\"url\":\"iPilot-${CI_COMMIT_TAG}-win-x86.exe\"}"
+        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-darwin-amd64\",\"url\":\"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-amd64\"}" \
+        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-darwin-arm64\",\"url\":\"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-darwin-arm64\"}" \
+        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-linux-amd64\",\"url\":\"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-linux-amd64\"}" \
+        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-win-amd64.exe\",\"url\":\"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-win-amd64.exe\"}" \
+        --assets-link "{\"name\":\"iPilot-${CI_COMMIT_TAG}-win-x86.exe\",\"url\":\"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/iPilot/${CI_COMMIT_TAG}/iPilot-${CI_COMMIT_TAG}-win-x86.exe\"}"
