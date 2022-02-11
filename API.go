@@ -19,15 +19,12 @@ func getLocalIP() string {
 		return ""
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
-	return string(body[:])
+	return string(body)
 }
 
-func checkIPSyntax(ipaddress string) bool {
+func isIPAddress(ipaddress string) bool {
 	addr := net.ParseIP(ipaddress)
-	if addr == nil {
-		return false
-	}
-	return true
+	return addr != nil
 }
 
 func resolveDNSHostname(hostname string) string {
@@ -53,7 +50,7 @@ func getIPInfo(ipaddress string) IPAddressInfo {
 	return info
 }
 
-func getBGPPrefixes(as string) {
+func printBGPPrefixes(as string) {
 	apiEndpoint := "https://api.hackertarget.com/aslookup/?q=" + as
 	resp, err := http.Get(apiEndpoint)
 	if err != nil {

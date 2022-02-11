@@ -33,21 +33,20 @@ func main() {
 	if input == "" {
 		fmt.Println("FATAL: No IP address or domain name was specified.")
 		os.Exit(1)
+	}
+
+	if input == "me" {
+		input = getLocalIP()
+	}
+	if isIPAddress(input) {
+		printIPInfo(input, wantPrefixes)
 	} else {
-		if input == "me" {
-			input = getLocalIP()
-		}
-		var isIPCorrect bool = checkIPSyntax(input)
-		if isIPCorrect == true {
-			printIPInfo(input, wantPrefixes)
+		ipaddress := resolveDNSHostname(input)
+		if isIPAddress(ipaddress) {
+			fmt.Println("Domain Name:	", input)
+			printIPInfo(ipaddress, wantPrefixes)
 		} else {
-			ipaddress := resolveDNSHostname(input)
-			if checkIPSyntax(ipaddress) == true {
-				fmt.Println("Domain Name:	", input)
-				printIPInfo(ipaddress, wantPrefixes)
-			} else {
-				fmt.Println("Invalid query.")
-			}
+			fmt.Println("Invalid query.")
 		}
 	}
 

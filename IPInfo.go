@@ -32,8 +32,8 @@ func printIPInfo(input string, wantPrefixes bool) {
 	fmt.Println("Timezone:	", IPInfo.Timezone)
 	fmt.Println("ISP:		", IPInfo.ISP)
 	fmt.Println("BGP AS:		", bgpAS)
-	if wantPrefixes == true {
+	if wantPrefixes {
 		fmt.Println("\nBGP Prefixes:")
-		getBGPPrefixes(bgpAS)
+		printBGPPrefixes(bgpAS)
 	}
 }
