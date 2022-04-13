@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine as build
+FROM golang:1.18-alpine as build
 WORKDIR /go/src/app
 COPY . /go/src/app
 RUN CGO_ENABLED=0 go build -o /go/bin/app
