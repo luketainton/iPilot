@@ -21,6 +21,3 @@ For support please open an issue on [GitLab](https://gitlab.com/luketainton/iPil
 
 ## Credits
 This script runs thanks to the APIs provided by [IP-API](http://ip-api.com) and [HackerTarget](https://hackertarget.com/as-ip-lookup).
-
-## MOVED TO GITLAB
-This repository has moved to [GitLab](https://gitlab.com/luketainton/iPilot). All future commits will be mirrored back to GitHub, but changes will only be accepted on the GitLab repository.
