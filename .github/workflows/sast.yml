@@ -1,21 +1,18 @@
 name: SAST Scan
 on:
   push:
-    branches: '*'
   pull_request:
     branches: [ main ]
 
 jobs:  
   scan:
-    name: Scan
-    uses: AppThreat/sast-scan-action@master
-    with:
-      output: reports
-      type: go
-  
-  upload:
-    name: Upload reports
-    uses: actions/upload-artifact@v1
-    with:
-      name: sast-scan-reports
-      path: reports
+    runs-on: ubuntu-latest
+    steps:
+    - uses: 'AppThreat/sast-scan-action/action.yml@master'
+      with:
+        output: reports
+        type: go
+    - uses: actions/upload-artifact@v1
+      with:
+        name: sast-scan-reports
+        path: reports
