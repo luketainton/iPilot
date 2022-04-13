@@ -5,4 +5,4 @@ name = "go"
 enabled = true
 
   [analyzers.meta]
-  import_root = "gitlab.com/luketainton/iPilot"
+  import_root = "github.com/luketainton/iPilot"
