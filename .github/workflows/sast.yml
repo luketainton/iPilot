@@ -8,7 +8,8 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-    - uses: 'AppThreat/sast-scan-action/action.yml@master'
+    - uses: actions/checkout@v2
+    - uses: AppThreat/sast-scan-action@master
       with:
         output: reports
         type: go
