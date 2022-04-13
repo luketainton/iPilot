@@ -1,0 +1,15 @@
+name: Build
+on: [push]
+
+jobs:  
+  sast:
+  - name: Scan
+    uses: AppThreat/sast-scan-action@master
+    with:
+      output: reports
+      type: go
+  - name: Upload reports
+    uses: actions/upload-artifact@v1
+    with:
+      name: sast-scan-reports
+      path: reports
