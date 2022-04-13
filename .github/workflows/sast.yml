@@ -1,14 +1,20 @@
-name: Build
-on: [push]
+name: SAST Scan
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: [ main ]
 
 jobs:  
-  sast:
-  - name: Scan
+  scan:
+    name: Scan
     uses: AppThreat/sast-scan-action@master
     with:
       output: reports
       type: go
-  - name: Upload reports
+  
+  upload:
+    name: Upload reports
     uses: actions/upload-artifact@v1
     with:
       name: sast-scan-reports
