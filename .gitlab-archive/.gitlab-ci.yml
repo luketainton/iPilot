@@ -29,7 +29,7 @@ build-binary:
   stage: build
   only:
   - tags
-  image: golang:1.18.1
+  image: golang:1.18.2
   before_script:
   - cd $GOPATH/src
   - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
