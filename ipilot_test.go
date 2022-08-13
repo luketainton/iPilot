@@ -4,7 +4,7 @@ import "testing"
 
 func TestGetCurrentIP(t *testing.T) {
 	myip := getLocalIP()
-	if myip == nil {
+	if myip == "" {
 		t.Log("could not retrieve current IP")
 		t.Fail()
 	}
