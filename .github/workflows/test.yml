@@ -25,6 +25,7 @@ jobs:
           cat report.xml
       - name: Test
         run: go test -short -coverprofile=coverage.out
+        continue-on-error: true
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
