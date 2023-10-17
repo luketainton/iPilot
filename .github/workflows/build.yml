@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare-data]
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
     - name: Login to GitHub Package Registry
       run: echo ${{ secrets.PAT }} | docker login ghcr.io -u luketainton --password-stdin
     - name: Build image for GitHub Package Registry
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare-data]
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
     - name: Build artifacts
       run: |
         docker run --rm -w /go/src/app -v ${PWD}:/go/src/app -e CGO_ENABLED=0 -e GOARCH=amd64 -e GOOS=darwin golang:alpine go build -o /go/src/app/${{ needs.prepare-data.outputs.repo }}-${{ needs.prepare-data.outputs.tag }}-darwin-amd64
